@@ -15,6 +15,7 @@
 */
 
 #include "Task.hpp"
+#include <Logger/Logger.hpp>
 
 using namespace DataMiner;
 
@@ -22,12 +23,12 @@ using namespace DataMiner;
  * Creates a new task
  */
 DataMiner::Task::Task() {
-	
+	// logger->getInput<int>("Please choose an action to perform for this task (Input a number):", )
 }
 
 /**
  * Runs the task
  */
 void DataMiner::Task::run() {
-	
+
 }

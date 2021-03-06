@@ -38,11 +38,12 @@ int main(int argc, const char* argv[]) {
 
 	// Perform data mining tasks
 	bool shouldContinue = true;
-	const std::vector<std::string> acceptableValues = {std::string("Y"), std::string("N")};
 	while (shouldContinue) {
 		logger.print("Performed task!");
 
-		std::string inp = logger.getInput<std::string>("Do you have another Data Mining task to perform? (Y/N)", acceptableValues);
+		std::string inp = logger.getInput<std::string>("Do you have another Data Mining task to perform? (Y/N)", [](std::string& val) {
+			return val == "Y" || val == "N";
+		});
 		shouldContinue = inp == "Y";
 	}
 

@@ -21,6 +21,9 @@
  */
 namespace DataMiner {
 
+	/**
+	 * Available task actions
+	 */
 	enum class TaskAction {
 		createModel,
 		runModel

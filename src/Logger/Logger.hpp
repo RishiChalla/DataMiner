@@ -145,6 +145,78 @@ namespace DataMiner {
 			}
 			return input;
 		}
+
+		/**
+		 * Gets input from the user
+		 * 
+		 * @param isAcceptableFn A function to check if the value provided is acceptable or not (Returns true if the value is valid)
+		 * @returns The user's input
+		 */
+		template <typename T> T getInput(bool (*isAcceptableFn)(T&)) {
+			T input = getInput<T>();
+			bool isValid = isAcceptableFn(input);
+			while (!isValid) {
+				print("Invalid input, please input an acceptable value.");
+				input = getInput<T>();
+				isValid = isAcceptableFn(input);
+			}
+			return input;
+		}
+
+		/**
+		 * Gets input from the user
+		 * 
+		 * @param inputStr A message to print before asking for the user's input
+		 * @param isAcceptableFn A function to check if the value provided is acceptable or not (Returns true if the value is valid)
+		 * @returns The user's input
+		 */
+		template <typename T> T getInput(const char* inputStr, bool (*isAcceptableFn)(T&)) {
+			T input = getInput<T>(inputStr);
+			bool isValid = isAcceptableFn(input);
+			while (!isValid) {
+				print("Invalid input, please input an acceptable value.");
+				input = getInput<T>(inputStr);
+				isValid = isAcceptableFn(input);
+			}
+			return input;
+		}
+
+		/**
+		 * Gets input from the user
+		 * 
+		 * @param isAcceptableFn A function to check if the value provided is acceptable or not (Returns true if the value is valid)
+		 * @param context A pointer to anything which will be passed to the validation function as context
+		 * @returns The user's input
+		 */
+		template <typename T> T getInput(bool (*isAcceptableFn)(T&, void*), void* context) {
+			T input = getInput<T>();
+			bool isValid = isAcceptableFn(input, context);
+			while (!isValid) {
+				print("Invalid input, please input an acceptable value.");
+				input = getInput<T>();
+				isValid = isAcceptableFn(input, context);
+			}
+			return input;
+		}
+
+		/**
+		 * Gets input from the user
+		 * 
+		 * @param inputStr A message to print before asking for the user's input
+		 * @param isAcceptableFn A function to check if the value provided is acceptable or not (Returns true if the value is valid)
+		 * @param context A pointer to anything which will be passed to the validation function as context
+		 * @returns The user's input
+		 */
+		template <typename T> T getInput(const char* inputStr, bool (*isAcceptableFn)(T&, void*), void* context) {
+			T input = getInput<T>(inputStr);
+			bool isValid = isAcceptableFn(input, context);
+			while (!isValid) {
+				print("Invalid input, please input an acceptable value.");
+				input = getInput<T>(inputStr);
+				isValid = isAcceptableFn(input, context);
+			}
+			return input;
+		}
 	};
 
 	/**
