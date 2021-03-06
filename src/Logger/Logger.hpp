@@ -153,7 +153,7 @@ namespace DataMiner {
 		 * @param isAcceptableFn A function to check if the value provided is acceptable or not (Returns true if the value is valid)
 		 * @returns The user's input
 		 */
-		template <typename T> T getInput(bool (*isAcceptableFn)(T&)) {
+		template <typename T> T getInput(bool (*isAcceptableFn)(const T&)) {
 			T input = getInput<T>();
 			bool isValid = isAcceptableFn(input);
 			while (!isValid) {
@@ -171,7 +171,7 @@ namespace DataMiner {
 		 * @param isAcceptableFn A function to check if the value provided is acceptable or not (Returns true if the value is valid)
 		 * @returns The user's input
 		 */
-		template <typename T> T getInput(const char* inputStr, bool (*isAcceptableFn)(T&)) {
+		template <typename T> T getInput(const char* inputStr, bool (*isAcceptableFn)(const T&)) {
 			T input = getInput<T>(inputStr);
 			bool isValid = isAcceptableFn(input);
 			while (!isValid) {
@@ -189,7 +189,7 @@ namespace DataMiner {
 		 * @param context A pointer to anything which will be passed to the validation function as context
 		 * @returns The user's input
 		 */
-		template <typename T> T getInput(bool (*isAcceptableFn)(T&, void*), void* context) {
+		template <typename T> T getInput(bool (*isAcceptableFn)(const T&, void*), void* context) {
 			T input = getInput<T>();
 			bool isValid = isAcceptableFn(input, context);
 			while (!isValid) {
@@ -208,7 +208,7 @@ namespace DataMiner {
 		 * @param context A pointer to anything which will be passed to the validation function as context
 		 * @returns The user's input
 		 */
-		template <typename T> T getInput(const char* inputStr, bool (*isAcceptableFn)(T&, void*), void* context) {
+		template <typename T> T getInput(const char* inputStr, bool (*isAcceptableFn)(const T&, void*), void* context) {
 			T input = getInput<T>(inputStr);
 			bool isValid = isAcceptableFn(input, context);
 			while (!isValid) {

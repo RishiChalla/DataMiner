@@ -81,6 +81,6 @@ void DataMiner::Logger::print(const char* message) {
 		 * Prints a new line to the console and the log file.
 		 */
 void DataMiner::Logger::println() {
-	std::cout << "\n" << std::endl;
-	logFile << "\n" << std::endl;
+	std::cout << std::endl;
+	logFile << std::endl;
 }

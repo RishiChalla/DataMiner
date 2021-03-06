@@ -16,6 +16,7 @@
 
 #include "Task.hpp"
 #include <Logger/Logger.hpp>
+#include <Data/Data.hpp>
 #include <sstream>
 
 using namespace DataMiner;
@@ -39,14 +40,12 @@ DataMiner::Task::Task() {
 		counter++;
 	}
 
-	int action = logger->getInput<int>("Please choose an action to perform for this task (Input a number):", [](int& value, void* selfPtr) {
+	int action = logger->getInput<int>("Please choose an action to perform for this task (Input a number):", [](const int& value, void* selfPtr) {
 		Task* self = (Task*) selfPtr;
 		return value >= 1 && value <= self->getTaskActions().size();
 	}, this);
 
 	taskAction = actions[action - 1];
-
-	logger->print(taskActions[taskAction].c_str());
 }
 
 const std::map<TaskAction, std::string>& DataMiner::Task::getTaskActions() {
@@ -57,5 +56,16 @@ const std::map<TaskAction, std::string>& DataMiner::Task::getTaskActions() {
  * Runs the task
  */
 void DataMiner::Task::run() {
+	logger->print("Now beginning Data Mining Task, to proceed you must open a dataset.");
 
+	try {
+		Data dataset;
+	}
+	catch (const char* error) {
+		std::stringstream errStream;
+		errStream << "Operation ended with the following error: " << error;
+		logger->error(errStream.str().c_str());
+		logger->print("Now ending Data Mining Task due to an error.");
+		return;
+	}
 }

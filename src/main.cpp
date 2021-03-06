@@ -43,7 +43,7 @@ int main(int argc, const char* argv[]) {
 		Task task;
 		task.run();
 
-		std::string inp = logger.getInput<std::string>("Do you have another Data Mining task to perform? (Y/N)", [](std::string& val) {
+		std::string inp = logger.getInput<std::string>("Do you have another Data Mining task to perform? (Y/N)", [](const std::string& val) {
 			return val == "Y" || val == "N";
 		});
 		shouldContinue = inp == "Y";
