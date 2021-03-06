@@ -17,6 +17,7 @@
 #include <iostream>
 #include <sstream>
 #include <Logger/Logger.hpp>
+#include <Task/Task.hpp>
 
 using namespace DataMiner;
 
@@ -39,7 +40,8 @@ int main(int argc, const char* argv[]) {
 	// Perform data mining tasks
 	bool shouldContinue = true;
 	while (shouldContinue) {
-		logger.print("Performed task!");
+		Task task;
+		task.run();
 
 		std::string inp = logger.getInput<std::string>("Do you have another Data Mining task to perform? (Y/N)", [](std::string& val) {
 			return val == "Y" || val == "N";

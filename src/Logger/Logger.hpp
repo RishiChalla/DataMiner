@@ -18,6 +18,7 @@
 
 #include <fstream>
 #include <vector>
+#include <iostream>
 
 /**
  * Main data mining namespace

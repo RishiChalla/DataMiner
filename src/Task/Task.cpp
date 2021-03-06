@@ -16,6 +16,7 @@
 
 #include "Task.hpp"
 #include <Logger/Logger.hpp>
+#include <sstream>
 
 using namespace DataMiner;
 
@@ -23,7 +24,33 @@ using namespace DataMiner;
  * Creates a new task
  */
 DataMiner::Task::Task() {
-	// logger->getInput<int>("Please choose an action to perform for this task (Input a number):", )
+	taskActions[TaskAction::createModel] = "Creates a new processor/model given a dataset";
+	taskActions[TaskAction::loadModel] = "Applies a processor/model on an existing dataset";
+
+	int counter = 1;
+	logger->info("Available Task Actions:");
+	TaskAction* actions = (TaskAction*) alloca(sizeof(TaskAction) * taskActions.size());
+
+	for (auto i = taskActions.begin(); i != taskActions.end(); i++) {
+		std::stringstream stream;
+		stream << counter << ". " << i->second;
+		logger->print(stream.str().c_str());
+		actions[counter - 1] = i->first;
+		counter++;
+	}
+
+	int action = logger->getInput<int>("Please choose an action to perform for this task (Input a number):", [](int& value, void* selfPtr) {
+		Task* self = (Task*) selfPtr;
+		return value >= 1 && value <= self->getTaskActions().size();
+	}, this);
+
+	taskAction = actions[action - 1];
+
+	logger->print(taskActions[taskAction].c_str());
+}
+
+const std::map<TaskAction, std::string>& DataMiner::Task::getTaskActions() {
+	return taskActions;
 }
 
 /**

@@ -16,17 +16,20 @@
 
 #pragma once
 
+#include <map>
+#include <string>
+
 /**
  * Main data mining namespace
  */
 namespace DataMiner {
 
 	/**
-	 * Available task actions
+	 * Types of task actions available
 	 */
 	enum class TaskAction {
 		createModel,
-		runModel
+		loadModel
 	};
 	
 	/**
@@ -35,15 +38,26 @@ namespace DataMiner {
 	class Task {
 	private:
 		/**
+		 * All available tasks with descriptions
+		 */
+		std::map<TaskAction, std::string> taskActions;
+
+		/**
 		 * The action this task is performing
 		 */
 		TaskAction taskAction;
 
 	public:
+
 		/**
 		 * Creates a new task
 		 */
 		Task();
+
+		/**
+		 * Getter method for available task actions
+		 */
+		const std::map<TaskAction, std::string>& getTaskActions();
 
 		/**
 		 * Runs the task
