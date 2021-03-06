@@ -17,3 +17,17 @@
 #include "Task.hpp"
 
 using namespace DataMiner;
+
+/**
+ * Creates a new task
+ */
+DataMiner::Task::Task() {
+	
+}
+
+/**
+ * Runs the task
+ */
+void DataMiner::Task::run() {
+	
+}

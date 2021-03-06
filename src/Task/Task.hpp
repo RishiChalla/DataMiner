@@ -20,14 +20,31 @@
  * Main data mining namespace
  */
 namespace DataMiner {
+
+	enum class TaskAction {
+		createModel,
+		runModel
+	};
 	
 	/**
 	 * Main Task class
 	 */
 	class Task {
 	private:
+		/**
+		 * The action this task is performing
+		 */
+		TaskAction taskAction;
 
 	public:
-		
+		/**
+		 * Creates a new task
+		 */
+		Task();
+
+		/**
+		 * Runs the task
+		 */
+		void run();
 	};
 }

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <fstream>
+#include <vector>
 
 /**
  * Main data mining namespace
@@ -82,7 +83,6 @@ namespace DataMiner {
 			std::cin >> input;
 			logFile << "User has inputted: `" << input << "`" << std::endl;
 			std::cout << "User has inputted: `" << input << "`" << std::endl;
-			println();
 			return input;
 		}
 
@@ -98,7 +98,51 @@ namespace DataMiner {
 			std::cin >> input;
 			logFile << "User has inputted: `" << input << "`" << std::endl;
 			std::cout << "User has inputted: `" << input << "`" << std::endl;
-			println();
+			return input;
+		}
+
+		/**
+		 * Gets input from the user
+		 * 
+		 * @param acceptableValues The list of acceptable values (Only the values in the array will be accepted)
+		 * @returns The user's input
+		 */
+		template <typename T> T getInput(const std::vector<T>& acceptableValues) {
+			T input = getInput<T>();
+			bool isValid = false;
+			for (size_t i = 0; i < acceptableValues.size(); i++)
+					if (acceptableValues[i] == input)
+						isValid = true;
+			while (!isValid) {
+				print("Invalid input, please input an acceptable value.");
+				input = getInput<T>();
+				for (size_t i = 0; i < acceptableValues.size(); i++)
+					if (acceptableValues[i] == input)
+						isValid = true;
+			}
+			return input;
+		}
+
+		/**
+		 * Gets input from the user
+		 * 
+		 * @param inputStr A message to print before asking for the user's input
+		 * @param acceptableValues The list of acceptable values (Only the values in the array will be accepted)
+		 * @returns The user's input
+		 */
+		template <typename T> T getInput(const char* inputStr, const std::vector<T>& acceptableValues) {
+			T input = getInput<T>(inputStr);
+			bool isValid = false;
+			for (size_t i = 0; i < acceptableValues.size(); i++)
+					if (acceptableValues[i] == input)
+						isValid = true;
+			while (!isValid) {
+				print("Invalid input, please input an acceptable value.");
+				input = getInput<T>(inputStr);
+				for (size_t i = 0; i < acceptableValues.size(); i++)
+					if (acceptableValues[i] == input)
+						isValid = true;
+			}
 			return input;
 		}
 	};
