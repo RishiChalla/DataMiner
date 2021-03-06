@@ -4,7 +4,7 @@ project(DataMiner VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp src/*.h)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp src/*.h src/*.hpp)
 
 add_executable(DataMiner ${sources})
 

@@ -15,8 +15,27 @@
 */
 
 #include <iostream>
+#include <Logger/Logger.hpp>
 
-int main(int, char**) {
-    std::cout << "Hello, world!" << std::endl;
+using namespace DataMiner;
+
+/**
+ * Main function of the program
+ */
+int main(int argc, const char* argv[]) {
+	// Begin the program
+    std::cout << "Beginning Data Miner Program" << std::endl;
+
+	// Get the name and location of the output file
+	std::cout << "Please input the relative name and path of a log file (include the file extension)" << std::endl;
+	std::string logFile;
+	std::cin >> logFile;
+
+	// Create the logger
+	Logger logger(logFile.c_str());
+	DataMiner::logger = &logger;
+
+	// Exit the program after all tasks are complete
+	std::cout << "Please hit enter to exit the program." << std::endl;
 	std::cin.get();
 }
