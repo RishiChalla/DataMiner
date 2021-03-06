@@ -20,12 +20,19 @@
 using namespace DataMiner;
 
 /**
+ * Main logger of the program
+ */
+Logger* DataMiner::logger = nullptr;
+
+/**
  * Creates a new logger given the log output file name (with extension/path)
  */
 DataMiner::Logger::Logger(const char* logOutput) : logFile(logOutput) {
 	if (!logFile.is_open()) {
-		std::cout << "Aborting program due to invalid log file. Please hit enter to exit the program." << std::endl;
-		std::cin.get();
+		std::cout << "Aborting program due to invalid log file. Please type anything to exit the program." << std::endl;
+		std::string end;
+		std::cin >> end;
+		std::cout << end;
 		exit(0);
 	}
 }
@@ -66,6 +73,14 @@ void DataMiner::Logger::error(const char* message) {
  * @param message The message to print
  */
 void DataMiner::Logger::print(const char* message) {
-	std::cout << "[Print] : " << message << std::endl;
-	logFile << "[Print] : " << message << std::endl;
+	std::cout << message << std::endl;
+	logFile << message << std::endl;
+}
+
+/**
+		 * Prints a new line to the console and the log file.
+		 */
+void DataMiner::Logger::println() {
+	std::cout << "\n" << std::endl;
+	logFile << "\n" << std::endl;
 }

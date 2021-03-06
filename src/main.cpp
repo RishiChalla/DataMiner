@@ -15,6 +15,7 @@
 */
 
 #include <iostream>
+#include <sstream>
 #include <Logger/Logger.hpp>
 
 using namespace DataMiner;
@@ -35,7 +36,21 @@ int main(int argc, const char* argv[]) {
 	Logger logger(logFile.c_str());
 	DataMiner::logger = &logger;
 
+	// Perform data mining tasks
+	bool shouldContinue = true;
+	while (shouldContinue) {
+		logger.print("Performed task!");
+
+		std::string inp = logger.getInput<std::string>("Do you have another Data Mining task to perform? (Y/N)");
+		while (inp != "Y" && inp != "N") {
+			inp = logger.getInput<std::string>("Invalid Input. Do you have another Data Mining task to perform? (Y/N)");
+		}
+		shouldContinue = inp == "Y";
+	}
+
 	// Exit the program after all tasks are complete
-	std::cout << "Please hit enter to exit the program." << std::endl;
-	std::cin.get();
+	std::cout << "Type anything to close the program." << std::endl;
+	std::string end;
+	std::cin >> end;
+	std::cout << end;
 }

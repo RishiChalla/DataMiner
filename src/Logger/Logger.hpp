@@ -68,6 +68,11 @@ namespace DataMiner {
 		void print(const char* message);
 
 		/**
+		 * Prints a new line to the console and the log file.
+		 */
+		void println();
+
+		/**
 		 * Gets input from the user
 		 * 
 		 * @returns The user's input
@@ -75,8 +80,9 @@ namespace DataMiner {
 		template <typename T> T getInput() {
 			T input;
 			std::cin >> input;
-			std::cout << std::endl;
 			logFile << "User has inputted: `" << input << "`" << std::endl;
+			std::cout << "User has inputted: `" << input << "`" << std::endl;
+			println();
 			return input;
 		}
 
@@ -90,8 +96,9 @@ namespace DataMiner {
 			T input;
 			print(inputStr);
 			std::cin >> input;
-			std::cout << std::endl;
 			logFile << "User has inputted: `" << input << "`" << std::endl;
+			std::cout << "User has inputted: `" << input << "`" << std::endl;
+			println();
 			return input;
 		}
 	};
@@ -99,5 +106,5 @@ namespace DataMiner {
 	/**
 	 * Main logger of the program
 	 */
-	Logger* logger;
+	extern Logger* logger;
 }
