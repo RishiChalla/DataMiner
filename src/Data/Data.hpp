@@ -103,6 +103,96 @@ namespace DataMiner {
 			return other.name != name || other.role != role || other.type != type;
 		}
 	};
+
+	/**
+	 * Represents a single row inside of a dataset
+	 */
+	struct DataRow {
+	private:
+
+		/**
+		 * The string data of the row
+		 */
+		std::vector<const std::string*> strData;
+
+		/**
+		 * The numerical data of the row
+		 */
+		std::vector<const double*> numData;
+
+		/**
+		 * The columns of the dataset (direct reference)
+		 */
+		const std::vector<DataColumn>& columns;
+
+		/**
+		 * Creates a new data row given the columns
+		 * 
+		 * @param columns A reference to the columns of the dataset
+		 */
+		DataRow(const std::vector<DataColumn>& columns);
+
+		/**
+		 * Creates a new data row given the columns and data
+		 * 
+		 * @param columns A reference to the columns of the dataset
+		 * @param strData The string data of the row
+		 * @param numData The numerical data of the row
+		 */
+		DataRow(const std::vector<DataColumn>& columns, const std::vector<const std::string*>& strData, const std::vector<const double*>& numData);
+	
+	public:
+
+		/**
+		 * Gets string data from the row
+		 * 
+		 * @throws A string representing why the operation failed
+		 * @param column The column to retrieve from
+		 */
+		const std::string& getString(const char* column) const;
+
+		/**
+		 * Gets string data from the row
+		 * 
+		 * @throws A string representing why the operation failed
+		 * @param column The column to retrieve from
+		 */
+		const std::string& getString(size_t column) const;
+
+		/**
+		 * Gets string data from the row
+		 * 
+		 * @throws A string representing why the operation failed
+		 * @param column The column to retrieve from
+		 */
+		const std::string& getString(const DataColumn& column) const;
+
+		/**
+		 * Gets double data from the row
+		 * 
+		 * @throws A string representing why the operation failed
+		 * @param column The column to retrieve from
+		 */
+		const double& getDouble(const char* column) const;
+
+		/**
+		 * Gets double data from the row
+		 * 
+		 * @throws A string representing why the operation failed
+		 * @param column The column to retrieve from
+		 */
+		const double& getDouble(size_t column) const;
+
+		/**
+		 * Gets double data from the row
+		 * 
+		 * @throws A string representing why the operation failed
+		 * @param column The column to retrieve from
+		 */
+		const double& getDouble(const DataColumn& column) const;
+
+		friend class Data;
+	};
 	
 	/**
 	 * Represents a dataset to train/test on
@@ -343,6 +433,15 @@ namespace DataMiner {
 		 * @param column the column to set as the target
 		 */
 		void setTarget(DataColumn& column);
+
+		/**
+		 * Returns a row from the dataset
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param row The row to return
+		 * @returns The row
+		 */
+		const DataRow getRow(size_t row) const;
 
 		/**
 		 * Returns the count of columns in the dataset

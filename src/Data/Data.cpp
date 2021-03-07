@@ -528,3 +528,95 @@ void DataMiner::Data::setTarget(DataColumn& column) {
 			throw "Another column already exists which is set to be a target";
 	column.role = DataRole::target;
 }
+
+/**
+ * Returns a row from the dataset
+ * 
+ * @throws A string with a description of why the process failed
+ * @param row The row to return
+ * @returns The row
+ */
+const DataRow DataMiner::Data::getRow(size_t row) const {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Creates a new data row given the columns
+ * 
+ * @param columns A reference to the columns of the dataset
+ */
+DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns) : columns(columns) {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Creates a new data row given the columns and data
+ * 
+ * @param columns A reference to the columns of the dataset
+ * @param strData The string data of the row
+ * @param numData The numerical data of the row
+ */
+DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns, const std::vector<const std::string*>& strData, const std::vector<const double*>& numData) :
+	columns(columns), strData(strData), numData(numData) {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Gets string data from the row
+ * 
+ * @throws A string representing why the operation failed
+ * @param column The column to retrieve from
+ */
+const std::string& DataMiner::DataRow::getString(const char* column) const {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Gets string data from the row
+ * 
+ * @throws A string representing why the operation failed
+ * @param column The column to retrieve from
+ */
+const std::string& DataMiner::DataRow::getString(size_t column) const {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Gets string data from the row
+ * 
+ * @throws A string representing why the operation failed
+ * @param column The column to retrieve from
+ */
+const std::string& DataMiner::DataRow::getString(const DataColumn& column) const {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Gets double data from the row
+ * 
+ * @throws A string representing why the operation failed
+ * @param column The column to retrieve from
+ */
+const double& DataMiner::DataRow::getDouble(const char* column) const {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Gets double data from the row
+ * 
+ * @throws A string representing why the operation failed
+ * @param column The column to retrieve from
+ */
+const double& DataMiner::DataRow::getDouble(size_t column) const {
+	throw "Unsupported Operation";
+}
+
+/**
+ * Gets double data from the row
+ * 
+ * @throws A string representing why the operation failed
+ * @param column The column to retrieve from
+ */
+const double& DataMiner::DataRow::getDouble(const DataColumn& column) const {
+	throw "Unsupported Operation";
+}
