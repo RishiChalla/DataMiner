@@ -140,7 +140,8 @@ namespace DataMiner {
 		 * @param numData The numerical data of the row
 		 */
 		DataRow(const std::vector<DataColumn>& columns, const std::vector<const std::string*>& strData, const std::vector<const double*>& numData);
-	
+
+		friend class Data;
 	public:
 
 		/**
@@ -173,7 +174,7 @@ namespace DataMiner {
 		 * @throws A string representing why the operation failed
 		 * @param column The column to retrieve from
 		 */
-		const double& getDouble(const char* column) const;
+		const double& getNumber(const char* column) const;
 
 		/**
 		 * Gets double data from the row
@@ -181,7 +182,7 @@ namespace DataMiner {
 		 * @throws A string representing why the operation failed
 		 * @param column The column to retrieve from
 		 */
-		const double& getDouble(size_t column) const;
+		const double& getNumber(size_t column) const;
 
 		/**
 		 * Gets double data from the row
@@ -189,9 +190,7 @@ namespace DataMiner {
 		 * @throws A string representing why the operation failed
 		 * @param column The column to retrieve from
 		 */
-		const double& getDouble(const DataColumn& column) const;
-
-		friend class Data;
+		const double& getNumber(const DataColumn& column) const;
 	};
 	
 	/**

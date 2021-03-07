@@ -537,7 +537,26 @@ void DataMiner::Data::setTarget(DataColumn& column) {
  * @returns The row
  */
 const DataRow DataMiner::Data::getRow(size_t row) const {
-	throw "Unsupported Operation";
+	if (row >= nrows)
+		throw "Row is out of bounds";
+	std::vector<const std::string*> strDat;
+	std::vector<const double*> numDat;
+
+	size_t colIndex = 0;
+	for (const DataColumn& col : cols) {
+		if (col.type == DataType::string) {
+			strDat.push_back(&getString(colIndex, row));
+		}
+		if (col.type == DataType::number) {
+			numDat.push_back(&getNumber(colIndex, row));
+		}
+		colIndex++;
+	}
+
+	logger->print(std::to_string(strDat.size()).c_str());
+	logger->print(std::to_string(numDat.size()).c_str());
+
+	return DataRow(cols, strDat, numDat);
 }
 
 /**
@@ -545,9 +564,7 @@ const DataRow DataMiner::Data::getRow(size_t row) const {
  * 
  * @param columns A reference to the columns of the dataset
  */
-DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns) : columns(columns) {
-	throw "Unsupported Operation";
-}
+DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns) : columns(columns) {}
 
 /**
  * Creates a new data row given the columns and data
@@ -557,9 +574,7 @@ DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns) : columns(co
  * @param numData The numerical data of the row
  */
 DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns, const std::vector<const std::string*>& strData, const std::vector<const double*>& numData) :
-	columns(columns), strData(strData), numData(numData) {
-	throw "Unsupported Operation";
-}
+	columns(columns), strData(strData), numData(numData) {}
 
 /**
  * Gets string data from the row
@@ -568,7 +583,10 @@ DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns, const std::v
  * @param column The column to retrieve from
  */
 const std::string& DataMiner::DataRow::getString(const char* column) const {
-	throw "Unsupported Operation";
+	for (const DataColumn& col : columns)
+		if (col.name == column)
+			return getString(col);
+	throw "Column not found error";
 }
 
 /**
@@ -578,7 +596,9 @@ const std::string& DataMiner::DataRow::getString(const char* column) const {
  * @param column The column to retrieve from
  */
 const std::string& DataMiner::DataRow::getString(size_t column) const {
-	throw "Unsupported Operation";
+	if (column >= columns.size())
+		throw "Column not found error";
+	return getString(columns[column]);
 }
 
 /**
@@ -588,7 +608,21 @@ const std::string& DataMiner::DataRow::getString(size_t column) const {
  * @param column The column to retrieve from
  */
 const std::string& DataMiner::DataRow::getString(const DataColumn& column) const {
-	throw "Unsupported Operation";
+	size_t index = 0;
+	bool found = false;
+	for (const DataColumn& col : columns) {
+		if (&col == &column) {
+			found = true;
+			break;
+		}
+		if (col.type == column.type)
+			index++;
+	}
+
+	if (!found)
+		throw "Column not found error";
+	
+	return *strData[index];
 }
 
 /**
@@ -597,8 +631,11 @@ const std::string& DataMiner::DataRow::getString(const DataColumn& column) const
  * @throws A string representing why the operation failed
  * @param column The column to retrieve from
  */
-const double& DataMiner::DataRow::getDouble(const char* column) const {
-	throw "Unsupported Operation";
+const double& DataMiner::DataRow::getNumber(const char* column) const {
+	for (const DataColumn& col : columns)
+		if (col.name == column)
+			return getNumber(col);
+	throw "Column not found error";
 }
 
 /**
@@ -607,8 +644,10 @@ const double& DataMiner::DataRow::getDouble(const char* column) const {
  * @throws A string representing why the operation failed
  * @param column The column to retrieve from
  */
-const double& DataMiner::DataRow::getDouble(size_t column) const {
-	throw "Unsupported Operation";
+const double& DataMiner::DataRow::getNumber(size_t column) const {
+	if (column >= columns.size())
+		throw "Column not found error";
+	return getNumber(columns[column]);
 }
 
 /**
@@ -617,6 +656,18 @@ const double& DataMiner::DataRow::getDouble(size_t column) const {
  * @throws A string representing why the operation failed
  * @param column The column to retrieve from
  */
-const double& DataMiner::DataRow::getDouble(const DataColumn& column) const {
-	throw "Unsupported Operation";
+const double& DataMiner::DataRow::getNumber(const DataColumn& column) const {
+	size_t index = 0;
+	bool found = false;
+	for (const DataColumn& col : columns) {
+		if (&col == &column)
+			found = true;
+		if (col.type == column.type)
+			index++;
+	}
+
+	if (!found)
+		throw "Column not found error";
+	
+	return *numData[index];
 }
