@@ -116,9 +116,14 @@ namespace DataMiner {
 		std::ifstream file;
 
 		/**
-		 * The actual data of the dataset
+		 * Stores strings from the dataset
 		 */
-		void* data;
+		std::string* strData;
+
+		/**
+		 * Stores numeric values from the dataset
+		 */
+		double* numData;
 
 		/**
 		 * The number of rows in the dataset
@@ -141,6 +146,33 @@ namespace DataMiner {
 		 * @throws A string with a description of why the process failed
 		 */
 		void loadCsv(const char* filename);
+		
+		/**
+		 * Gets the index of the column within the specific datatype (useful for retrieving data)
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column whose index to retrieve
+		 * @returns The index of the column within the datatype
+		 */
+		size_t getIndex(const char* column) const;
+		
+		/**
+		 * Gets the index of the column within the specific datatype (useful for retrieving data)
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column whose index to retrieve
+		 * @returns The index of the column within the datatype
+		 */
+		size_t getIndex(size_t column) const;
+		
+		/**
+		 * Gets the index of the column within the specific datatype (useful for retrieving data)
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column whose index to retrieve
+		 * @returns The index of the column within the datatype
+		 */
+		size_t getIndex(const DataColumn& column) const;
 
 	public:
 		/**
@@ -189,7 +221,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		const double& getNumber(const char* column, int row) const;
+		const double& getNumber(const char* column, size_t row) const;
 
 		/**
 		 * Returns string data from the dataset
@@ -199,7 +231,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		const std::string& getString(const char* column, int row) const;
+		const std::string& getString(const char* column, size_t row) const;
 
 		/**
 		 * Returns a column
@@ -218,7 +250,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		const double& getNumber(size_t column, int row) const;
+		const double& getNumber(size_t column, size_t row) const;
 
 		/**
 		 * Returns string data from the dataset
@@ -228,7 +260,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		const std::string& getString(size_t column, int row) const;
+		const std::string& getString(size_t column, size_t row) const;
 
 		/**
 		 * Returns a column
@@ -247,7 +279,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		double& getNumber(const char* column, int row);
+		double& getNumber(const char* column, size_t row);
 
 		/**
 		 * Returns string data from the dataset
@@ -257,7 +289,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		std::string& getString(const char* column, int row);
+		std::string& getString(const char* column, size_t row);
 
 		/**
 		 * Returns a column
@@ -276,7 +308,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		double& getNumber(size_t column, int row);
+		double& getNumber(size_t column, size_t row);
 
 		/**
 		 * Returns string data from the dataset
@@ -286,7 +318,7 @@ namespace DataMiner {
 		 * @param row The row number
 		 * @returns The data
 		 */
-		std::string& getString(size_t column, int row);
+		std::string& getString(size_t column, size_t row);
 
 		/**
 		 * Sets the target of the dataset to a column
@@ -311,5 +343,23 @@ namespace DataMiner {
 		 * @param column the column to set as the target
 		 */
 		void setTarget(DataColumn& column);
+
+		/**
+		 * Returns the count of columns in the dataset
+		 * 
+		 * @returns The count of columns in the dataset
+		 */
+		size_t numColumns() const {
+			return ncols;
+		}
+
+		/**
+		 * Returns the count of rows in the dataset
+		 * 
+		 * @returns The count of rows in the dataset
+		 */
+		size_t numRows() const {
+			return nrows;
+		}
 	};
 }

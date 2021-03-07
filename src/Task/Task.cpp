@@ -59,7 +59,20 @@ void DataMiner::Task::run() {
 	logger->print("Now beginning Data Mining Task, to proceed you must open a dataset.");
 
 	try {
-		Data dataset;
+		const Data dataset;
+
+		logger->info("Printing CSV File:");
+
+		for (size_t row = 0; row < dataset.numRows(); row++) {
+			std::stringstream rowStream;
+			for (size_t col = 0; col < dataset.numColumns(); col++) {
+				if (dataset.getColumn(col).type == DataType::string)
+					rowStream << dataset.getString(col, row) << " ";
+				if (dataset.getColumn(col).type == DataType::number)
+					rowStream << dataset.getNumber(col, row) << " ";
+			}
+			logger->print(rowStream.str().c_str());
+		}
 	}
 	catch (const char* error) {
 		std::stringstream errStream;

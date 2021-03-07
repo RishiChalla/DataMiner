@@ -210,22 +210,53 @@ void DataMiner::Data::loadCsv(const char* filename) {
 		}
 
 		logger->info(str.str().c_str());
-		logger->println();
 	}
 
 	// Allocate sufficient data on the heap
-	size_t dataSize = 0;
+	size_t dataStrSize = 0;
+	size_t dataNumSize = 0;
 	for (DataColumn colType : cols) {
 		if (colType.type == DataType::number)
-			dataSize += sizeof(double) * nrows;
+			dataNumSize += nrows;
 		if (colType.type == DataType::string)
-			dataSize += sizeof(std::string) * nrows;
+			dataStrSize += nrows;
 	}
-	data = operator new(dataSize);
+	strData = new std::string[dataStrSize];
+	numData = new double[dataNumSize];
 
 	std::stringstream str;
-	str << "Successfully allocated " << (static_cast<double>(dataSize) / 1024.0) << "KB of memory!";
+	str << "Successfully allocated " << (static_cast<double>(dataStrSize*sizeof(std::string) + dataNumSize*sizeof(double)) / 1024.0)
+		<< "KB of memory!";
 	logger->info(str.str().c_str());
+
+	file.clear();
+	file.seekg(0, std::ios::beg);
+
+	std::string line;
+	if (hasHeader) std::getline(file, line);
+
+	size_t rowIndex = 0;
+	while (std::getline(file, line)) {
+		std::string value;
+		std::istringstream lineStream(line);
+		size_t colIndex = 0;
+		size_t numIndex = 0;
+		size_t strIndex = 0;
+		while (std::getline(lineStream, value, ',')) {
+			if (colIndex >= ncols)
+				throw "There is a row with more columns than the header/first row";
+			if (cols[colIndex].type == DataType::number) {
+				numData[numIndex*nrows + rowIndex] = std::stod(value);
+				numIndex++;
+			}
+			if (cols[colIndex].type == DataType::string) {
+				strData[strIndex*nrows + rowIndex] = value;
+				strIndex++;
+			}
+			colIndex++;
+		}
+		rowIndex++;
+	}
 }
 
 /**
@@ -233,7 +264,48 @@ void DataMiner::Data::loadCsv(const char* filename) {
  */
 DataMiner::Data::~Data() {
 	logger->info("Deleted allocated data");
-	operator delete(data);
+	delete[] strData;
+	delete[] numData;
+}
+
+/**
+ * Gets the index of the column within the specific datatype (useful for retrieving data)
+ * 
+ * @throws A string with a description of why the process failed
+ * @param column The column whose index to retrieve
+ * @returns The index of the column within the datatype
+ */
+size_t DataMiner::Data::getIndex(const char* column) const {
+	return getIndex(getColumn(column));
+}
+
+/**
+ * Gets the index of the column within the specific datatype (useful for retrieving data)
+ * 
+ * @throws A string with a description of why the process failed
+ * @param column The column whose index to retrieve
+ * @returns The index of the column within the datatype
+ */
+size_t DataMiner::Data::getIndex(size_t column) const {
+	return getIndex(getColumn(column));
+}
+
+/**
+ * Gets the index of the column within the specific datatype (useful for retrieving data)
+ * 
+ * @throws A string with a description of why the process failed
+ * @param column The column whose index to retrieve
+ * @returns The index of the column within the datatype
+ */
+size_t DataMiner::Data::getIndex(const DataColumn& column) const {
+	size_t index = 0;
+	for (const DataColumn& col : cols) {
+		if (&col == &column)
+			return index;
+		if (col.type == column.type)
+			index++;
+	}
+	throw "Column not found in dataset";
 }
 
 /**
@@ -270,8 +342,11 @@ const DataColumn& DataMiner::Data::getColumn(const char* column) const {
  * @param row The row number
  * @returns The data
  */
-const double& DataMiner::Data::getNumber(const char* column, int row) const {
-	throw "Unimplemented Error";
+const double& DataMiner::Data::getNumber(const char* column, size_t row) const {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return numData[i * nrows + row];
 }
 
 /**
@@ -282,8 +357,11 @@ const double& DataMiner::Data::getNumber(const char* column, int row) const {
  * @param row The row number
  * @returns The data
  */
-const std::string& DataMiner::Data::getString(const char* column, int row) const {
-	throw "Unimplemented Error";
+const std::string& DataMiner::Data::getString(const char* column, size_t row) const {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return strData[i * nrows + row];
 }
 
 /**
@@ -307,8 +385,11 @@ const DataColumn& DataMiner::Data::getColumn(size_t column) const {
  * @param row The row number
  * @returns The data
  */
-const double& DataMiner::Data::getNumber(size_t column, int row) const {
-	throw "Unimplemented Error";
+const double& DataMiner::Data::getNumber(size_t column, size_t row) const {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return numData[i * nrows + row];
 }
 
 /**
@@ -319,8 +400,11 @@ const double& DataMiner::Data::getNumber(size_t column, int row) const {
  * @param row The row number
  * @returns The data
  */
-const std::string& DataMiner::Data::getString(size_t column, int row) const {
-	throw "Unimplemented Error";
+const std::string& DataMiner::Data::getString(size_t column, size_t row) const {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return strData[i * nrows + row];
 }
 
 /**
@@ -345,8 +429,11 @@ DataColumn& DataMiner::Data::getColumn(const char* column) {
  * @param row The row number
  * @returns The data
  */
-double& DataMiner::Data::getNumber(const char* column, int row) {
-	throw "Unimplemented Error";
+double& DataMiner::Data::getNumber(const char* column, size_t row) {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return numData[i * nrows + row];
 }
 
 /**
@@ -357,8 +444,11 @@ double& DataMiner::Data::getNumber(const char* column, int row) {
  * @param row The row number
  * @returns The data
  */
-std::string& DataMiner::Data::getString(const char* column, int row) {
-	throw "Unimplemented Error";
+std::string& DataMiner::Data::getString(const char* column, size_t row) {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return strData[i * nrows + row];
 }
 
 /**
@@ -382,8 +472,11 @@ DataColumn& DataMiner::Data::getColumn(size_t column) {
  * @param row The row number
  * @returns The data
  */
-double& DataMiner::Data::getNumber(size_t column, int row) {
-	throw "Unimplemented Error";
+double& DataMiner::Data::getNumber(size_t column, size_t row) {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return numData[i * nrows + row];
 }
 
 /**
@@ -394,8 +487,11 @@ double& DataMiner::Data::getNumber(size_t column, int row) {
  * @param row The row number
  * @returns The data
  */
-std::string& DataMiner::Data::getString(size_t column, int row) {
-	throw "Unimplemented Error";
+std::string& DataMiner::Data::getString(size_t column, size_t row) {
+	if (row > nrows)
+		throw "Row out of range";
+	size_t i = getIndex(column);
+	return strData[i * nrows + row];
 }
 
 /**
