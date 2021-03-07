@@ -14,6 +14,30 @@
    limitations under the License.
 */
 
-#include "Processor.hpp"
+#pragma once
 
-using namespace DataMiner;
+#include <Processor/Processor.hpp>
+
+/**
+ * Main data mining namespace
+ */
+namespace DataMiner {
+
+	/**
+	 * Function to create a specific processor type and return it
+	 * (Processor Must be heap allocated)
+	 */
+	typedef Processor* (*createProcessorFn)(void);
+		
+	/**
+	 * Map containing all available processor algorithms
+	 */
+	std::map<std::string, createProcessorFn> processorType = {
+		{
+			"Desicion Tree",
+			[](void){
+				return (Processor*) nullptr;
+			}
+		}
+	};
+}

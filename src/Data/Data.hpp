@@ -113,12 +113,12 @@ namespace DataMiner {
 		/**
 		 * The string data of the row
 		 */
-		std::vector<const std::string*> strData;
+		std::vector<std::string> strData;
 
 		/**
 		 * The numerical data of the row
 		 */
-		std::vector<const double*> numData;
+		std::vector<double> numData;
 
 		/**
 		 * The columns of the dataset (direct reference)
@@ -139,10 +139,18 @@ namespace DataMiner {
 		 * @param strData The string data of the row
 		 * @param numData The numerical data of the row
 		 */
-		DataRow(const std::vector<DataColumn>& columns, const std::vector<const std::string*>& strData, const std::vector<const double*>& numData);
+		DataRow(const std::vector<DataColumn>& columns, const std::vector<std::string>& strData, const std::vector<double>& numData);
 
 		friend class Data;
 	public:
+		/**
+		 * Creates a sample data row given the dataset to connect to and all row data
+		 * 
+		 * @throws A string with a description of why the operation failed
+		 * @param dataset The dataset to connect to
+		 * @param data The data this row will contain
+		 */
+		DataRow(const Data& dataset, const std::vector<std::tuple<std::string, double>>& data);
 
 		/**
 		 * Gets string data from the row
@@ -262,6 +270,8 @@ namespace DataMiner {
 		 * @returns The index of the column within the datatype
 		 */
 		size_t getIndex(const DataColumn& column) const;
+
+		friend struct DataRow;
 
 	public:
 		/**

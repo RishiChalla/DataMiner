@@ -60,6 +60,8 @@ void DataMiner::Task::run() {
 
 	try {
 		const Data dataset;
+
+		
 	}
 	catch (const char* error) {
 		std::stringstream errStream;

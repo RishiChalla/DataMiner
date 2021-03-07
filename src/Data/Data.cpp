@@ -539,16 +539,16 @@ void DataMiner::Data::setTarget(DataColumn& column) {
 const DataRow DataMiner::Data::getRow(size_t row) const {
 	if (row >= nrows)
 		throw "Row is out of bounds";
-	std::vector<const std::string*> strDat;
-	std::vector<const double*> numDat;
+	std::vector<std::string> strDat;
+	std::vector<double> numDat;
 
 	size_t colIndex = 0;
 	for (const DataColumn& col : cols) {
 		if (col.type == DataType::string) {
-			strDat.push_back(&getString(colIndex, row));
+			strDat.push_back(getString(colIndex, row));
 		}
 		if (col.type == DataType::number) {
-			numDat.push_back(&getNumber(colIndex, row));
+			numDat.push_back(getNumber(colIndex, row));
 		}
 		colIndex++;
 	}
@@ -573,8 +573,31 @@ DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns) : columns(co
  * @param strData The string data of the row
  * @param numData The numerical data of the row
  */
-DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns, const std::vector<const std::string*>& strData, const std::vector<const double*>& numData) :
+DataMiner::DataRow::DataRow(const std::vector<DataColumn>& columns, const std::vector<std::string>& strData, const std::vector<double>& numData) :
 	columns(columns), strData(strData), numData(numData) {}
+
+/**
+ * Creates a sample data row given the dataset to connect to and all row data
+ * 
+ * @throws A string with a description of why the operation failed
+ * @param dataset The dataset to connect to
+ * @param data The data this row will contain
+ */
+DataMiner::DataRow::DataRow(const Data& dataset, const std::vector<std::tuple<std::string, double>>& data) : columns(dataset.cols) {
+	if (columns.size() != data.size())
+		throw "Data length and columns length are not equal";
+	
+	size_t i = 0;
+	for (auto dataTuple : data) {
+		if (columns[i].type == DataType::string) {
+			strData.push_back(std::get<0>(dataTuple));
+		}
+		if (columns[i].type == DataType::number) {
+			numData.push_back(std::get<1>(dataTuple));
+		}
+		i++;
+	}
+}
 
 /**
  * Gets string data from the row
@@ -622,7 +645,7 @@ const std::string& DataMiner::DataRow::getString(const DataColumn& column) const
 	if (!found)
 		throw "Column not found error";
 	
-	return *strData[index];
+	return strData[index];
 }
 
 /**
@@ -669,5 +692,5 @@ const double& DataMiner::DataRow::getNumber(const DataColumn& column) const {
 	if (!found)
 		throw "Column not found error";
 	
-	return *numData[index];
+	return numData[index];
 }

@@ -17,26 +17,61 @@
 #pragma once
 
 #include <Data/Data.hpp>
+#include <map>
 
 /**
  * Main data mining namespace
  */
 namespace DataMiner {
-	
+		
 	/**
 	 * Main Processor abstract class, all other processors must inherit from this
 	 */
 	class Processor {
-	private:
-
-	protected:
-		const Data& dataset;
 	public:
-		Processor(const Data& dataset);
-		Processor(const char* filename);
-		~Processor();
+		/**
+		 * Creates a new processor
+		 */
+		Processor();
+
+		/**
+		 * Creates a processor given a dataset to train on
+		 * 
+		 * @throws A string with a description of why the task failed
+		 * @param dataset The dataset to train on
+		 */
+		virtual void createProcessor(const Data& dataset) = 0;
+
+		/**
+		 * Loads a processor given a file a previous processor of the same type was saved to
+		 *
+		 * @throws A string with a description of why the task failed
+		 * @param filename The file the processor was saved to
+		 */
+		virtual void loadProcessor(const char* filename) = 0;
+
+		/**
+		 * Saves the processor to a file
+		 * 
+		 * @throws A string with a description of why the task failed
+		 * @param filename A file name to save the processor to
+		 */
 		virtual void saveProcessor(const char* filename) = 0;
-		virtual std::string predictCategorical() = 0;
-		virtual double predictNumerical() = 0;
+
+		/**
+		 * Predicts a categorical variable based on a sample row
+		 * 
+		 * @throws A string with a description of why the task failed
+		 * @param sampleRow the sample row to predict
+		 */
+		virtual std::string predictCategorical(const DataRow& sampleRow) = 0;
+
+		/**
+		 * Predicts a numerical variable based on a sample row
+		 * 
+		 * @throws A string with a description of why the task failed
+		 * @param sampleRow the sample row to predict
+		 */
+		virtual double predictNumerical(const DataRow& sampleRow) = 0;
 	};
 }
