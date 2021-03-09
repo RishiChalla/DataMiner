@@ -271,6 +271,64 @@ namespace DataMiner {
 		 */
 		size_t getIndex(const DataColumn& column) const;
 
+		/**
+		 * Returns a column
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column name
+		 * @returns The column
+		 */
+		DataColumn& getColumn(const char* column);
+
+		/**
+		 * Returns numeric data from the dataset
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column name
+		 * @param row The row number
+		 * @returns The data
+		 */
+		double& getNumber(const char* column, size_t row);
+
+		/**
+		 * Returns string data from the dataset
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column name
+		 * @param row The row number
+		 * @returns The data
+		 */
+		std::string& getString(const char* column, size_t row);
+
+		/**
+		 * Returns a column
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column name
+		 * @returns The column
+		 */
+		DataColumn& getColumn(size_t column);
+
+		/**
+		 * Returns numeric data from the dataset
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column name
+		 * @param row The row number
+		 * @returns The data
+		 */
+		double& getNumber(size_t column, size_t row);
+
+		/**
+		 * Returns string data from the dataset
+		 * 
+		 * @throws A string with a description of why the process failed
+		 * @param column The column name
+		 * @param row The row number
+		 * @returns The data
+		 */
+		std::string& getString(size_t column, size_t row);
+
 		friend struct DataRow;
 
 	public:
@@ -360,64 +418,6 @@ namespace DataMiner {
 		 * @returns The data
 		 */
 		const std::string& getString(size_t column, size_t row) const;
-
-		/**
-		 * Returns a column
-		 * 
-		 * @throws A string with a description of why the process failed
-		 * @param column The column name
-		 * @returns The column
-		 */
-		DataColumn& getColumn(const char* column);
-
-		/**
-		 * Returns numeric data from the dataset
-		 * 
-		 * @throws A string with a description of why the process failed
-		 * @param column The column name
-		 * @param row The row number
-		 * @returns The data
-		 */
-		double& getNumber(const char* column, size_t row);
-
-		/**
-		 * Returns string data from the dataset
-		 * 
-		 * @throws A string with a description of why the process failed
-		 * @param column The column name
-		 * @param row The row number
-		 * @returns The data
-		 */
-		std::string& getString(const char* column, size_t row);
-
-		/**
-		 * Returns a column
-		 * 
-		 * @throws A string with a description of why the process failed
-		 * @param column The column name
-		 * @returns The column
-		 */
-		DataColumn& getColumn(size_t column);
-
-		/**
-		 * Returns numeric data from the dataset
-		 * 
-		 * @throws A string with a description of why the process failed
-		 * @param column The column name
-		 * @param row The row number
-		 * @returns The data
-		 */
-		double& getNumber(size_t column, size_t row);
-
-		/**
-		 * Returns string data from the dataset
-		 * 
-		 * @throws A string with a description of why the process failed
-		 * @param column The column name
-		 * @param row The row number
-		 * @returns The data
-		 */
-		std::string& getString(size_t column, size_t row);
 
 		/**
 		 * Sets the target of the dataset to a column

@@ -18,6 +18,9 @@
 
 #include <Processor/Processor.hpp>
 
+// Include list of processors here
+#include <Algorithms/AlgorithmDecisionTree/AlgorithmDecisionTree.hpp>
+
 /**
  * Main data mining namespace
  */
@@ -36,7 +39,7 @@ namespace DataMiner {
 		{
 			"Desicion Tree",
 			[](void){
-				return (Processor*) nullptr;
+				return (Processor*) new AlgorithmDecisionTree();
 			}
 		}
 	};

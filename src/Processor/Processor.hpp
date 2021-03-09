@@ -29,10 +29,6 @@ namespace DataMiner {
 	 */
 	class Processor {
 	public:
-		/**
-		 * Creates a new processor
-		 */
-		Processor();
 
 		/**
 		 * Creates a processor given a dataset to train on
