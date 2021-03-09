@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-#include "AlgorithmDecisionTree.hpp"
+#include "DecisionTree.hpp"
 #include <Logger/Logger.hpp>
 #include <sstream>
 
@@ -46,7 +46,7 @@ static double getDouble(const std::string& str) {
  * @param value The value to check for
  * @returns Whether or not the value passes the condition
  */
-bool DataMiner::AlgorithmDecisionTree::DecisionTreeCondition::testCondition(const double& value) const {
+bool DataMiner::Algorithm::DecisionTree::DecisionTreeCondition::testCondition(const double& value) const {
 	if (conditionColumn.type == DataType::string)
 		throw "Invalid Data Type Error (Condition column is a string, number given)";
 	
@@ -60,7 +60,7 @@ bool DataMiner::AlgorithmDecisionTree::DecisionTreeCondition::testCondition(cons
  * @param value The value to check for
  * @returns Whether or not the value passes the condition
  */
-bool DataMiner::AlgorithmDecisionTree::DecisionTreeCondition::testCondition(const std::string& value) const {
+bool DataMiner::Algorithm::DecisionTree::DecisionTreeCondition::testCondition(const std::string& value) const {
 	if (conditionColumn.type == DataType::number)
 		throw "Invalid Data Type Error (Condition column is a number, string given)";
 	
@@ -76,7 +76,7 @@ bool DataMiner::AlgorithmDecisionTree::DecisionTreeCondition::testCondition(cons
  * @param row The row to check for (target column's data will not be checked)
  * @returns Whether or not the row satisfies all conditions in this rule
  */
-bool DataMiner::AlgorithmDecisionTree::DecisionTreeRule::satisfiesConditions(const DataRow& row) const {
+bool DataMiner::Algorithm::DecisionTree::DecisionTreeRule::satisfiesConditions(const DataRow& row) const {
 	for (const DataColumn* col : columns) {
 		if (col->role != DataRole::feature)
 			continue;
@@ -94,7 +94,7 @@ bool DataMiner::AlgorithmDecisionTree::DecisionTreeRule::satisfiesConditions(con
 	return true;
 }
 
-// -------------------------- AlgorithmDecisionTree --------------------------
+// -------------------------- Algorithm::DecisionTree --------------------------
 
 /**
  * Creates a processor given a dataset to train on
@@ -102,8 +102,22 @@ bool DataMiner::AlgorithmDecisionTree::DecisionTreeRule::satisfiesConditions(con
  * @throws A string with a description of why the task failed
  * @param dataset The dataset to train on
  */
-void DataMiner::AlgorithmDecisionTree::createProcessor(const Data& dataset) {
-	throw "Unimplemented Error";
+void DataMiner::Algorithm::DecisionTree::createProcessor(const Data& dataset) {
+	{
+		columns.reserve(dataset.numColumns());
+		const DataColumn* targetColumn = nullptr;
+		for (size_t i = 0; i < dataset.numColumns(); i++) {
+			columns.push_back(&dataset.getColumn(i));
+			if (columns[i]->role == DataRole::target) targetColumn = columns[i];
+		}
+
+		if (targetColumn == nullptr)
+			throw "Target column not found in dataset";
+		
+		this->targetColumn = targetColumn;
+	}
+
+	createDecisionTree(dataset);
 }
 
 /**
@@ -113,16 +127,20 @@ void DataMiner::AlgorithmDecisionTree::createProcessor(const Data& dataset) {
  * @param dataset A dataset containing all appropriate columns
  * @param filename The file the processor was saved to
  */
-void DataMiner::AlgorithmDecisionTree::loadProcessor(const Data& dataset, const char* filename) {
-	columns.reserve(dataset.numColumns());
-	const DataColumn* targetColumn = nullptr;
-	for (size_t i = 0; i < dataset.numColumns(); i++) {
-		columns.push_back(&dataset.getColumn(i));
-		if (columns[i]->role == DataRole::target) targetColumn = columns[i];
-	}
+void DataMiner::Algorithm::DecisionTree::loadProcessor(const Data& dataset, const char* filename) {
+	{
+		columns.reserve(dataset.numColumns());
+		const DataColumn* targetColumn = nullptr;
+		for (size_t i = 0; i < dataset.numColumns(); i++) {
+			columns.push_back(&dataset.getColumn(i));
+			if (columns[i]->role == DataRole::target) targetColumn = columns[i];
+		}
 
-	if (targetColumn == nullptr)
-		throw "Target column not found in dataset";
+		if (targetColumn == nullptr)
+			throw "Target column not found in dataset";
+		
+		this->targetColumn = targetColumn;
+	}
 
 	std::ifstream file(filename);
 
@@ -183,7 +201,7 @@ void DataMiner::AlgorithmDecisionTree::loadProcessor(const Data& dataset, const 
  * @throws A string with a description of why the task failed
  * @param filename A file name to save the processor to
  */
-void DataMiner::AlgorithmDecisionTree::saveProcessor(const char* filename) {
+void DataMiner::Algorithm::DecisionTree::saveProcessor(const char* filename) {
 	throw "Unimplemented Error";
 }
 
@@ -193,7 +211,7 @@ void DataMiner::AlgorithmDecisionTree::saveProcessor(const char* filename) {
  * @throws A string with a description of why the task failed
  * @param sampleRow the sample row to predict
  */
-std::string DataMiner::AlgorithmDecisionTree::predictCategorical(const DataRow& sampleRow) {
+std::string DataMiner::Algorithm::DecisionTree::predictCategorical(const DataRow& sampleRow) {
 	for (const DecisionTreeRule& rule : rules)
 		if (rule.satisfiesConditions(sampleRow))
 			return rule.strOutput;
@@ -207,7 +225,7 @@ std::string DataMiner::AlgorithmDecisionTree::predictCategorical(const DataRow& 
  * @throws A string with a description of why the task failed
  * @param sampleRow the sample row to predict
  */
-double DataMiner::AlgorithmDecisionTree::predictNumerical(const DataRow& sampleRow) {
+double DataMiner::Algorithm::DecisionTree::predictNumerical(const DataRow& sampleRow) {
 	for (const DecisionTreeRule& rule : rules)
 		if (rule.satisfiesConditions(sampleRow))
 			return rule.numOutput;

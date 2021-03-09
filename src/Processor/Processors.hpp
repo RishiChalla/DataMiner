@@ -19,7 +19,12 @@
 #include <Processor/Processor.hpp>
 
 // Include list of processors here
-#include <Algorithms/AlgorithmDecisionTree/AlgorithmDecisionTree.hpp>
+
+// Decision Trees
+#include <Algorithms/DecisionTree/ChiSquare/DecisionTreeChiSquare.hpp>
+#include <Algorithms/DecisionTree/GiniImpurity/DecisionTreeGiniImpurity.hpp>
+#include <Algorithms/DecisionTree/InformationGain/DecisionTreeInformationGain.hpp>
+#include <Algorithms/DecisionTree/VarianceReduction/DecisionTreeVarianceReduction.hpp>
 
 /**
  * Main data mining namespace
@@ -37,9 +42,27 @@ namespace DataMiner {
 	 */
 	std::map<std::string, createProcessorFn> ProcessorList = {
 		{
-			"Desicion Tree",
+			"Desicion Tree - Chi Square Splitting Method",
 			[](void){
-				return (Processor*) new AlgorithmDecisionTree();
+				return (Processor*) new Algorithm::DecisionTreeChiSquare();
+			}
+		},
+		{
+			"Desicion Tree - Gini Impurity Splitting Method",
+			[](void){
+				return (Processor*) new Algorithm::DecisionTreeGiniImpurity();
+			}
+		},
+		{
+			"Desicion Tree - Information Gain Splitting Method",
+			[](void){
+				return (Processor*) new Algorithm::DecisionTreeGiniInformationGain();
+			}
+		},
+		{
+			"Desicion Tree - Variance Reduction Splitting Method",
+			[](void){
+				return (Processor*) new Algorithm::DecisionTreeVarianceReduction();
 			}
 		}
 	};

@@ -19,14 +19,14 @@
 #include <Processor/Processor.hpp>
 
 /**
- * Main data mining namespace
+ * Main data mining algorithm namespace
  */
-namespace DataMiner {
+namespace DataMiner::Algorithm {
 		
 	/**
 	 * Algorithm for decision trees
 	 */
-	class AlgorithmDecisionTree : public Processor {
+	class DecisionTree : public Processor {
 	protected:
 
 		/**
@@ -125,8 +125,7 @@ namespace DataMiner {
 			 */
 			bool satisfiesConditions(const DataRow& row) const;
 		};
-	
-	private:
+
 		/**
 		 * The list of rules this decision tree contains
 		 */
@@ -137,12 +136,17 @@ namespace DataMiner {
 		 */
 		std::vector<const DataColumn*> columns;
 
+		/**
+		 * The target column
+		 */
+		const DataColumn* targetColumn;
+
 	public:
 
 		/**
 		 * Creates a new decision tree algorithm
 		 */
-		AlgorithmDecisionTree() {}
+		DecisionTree() {}
 
 		/**
 		 * Creates a processor given a dataset to train on
@@ -151,6 +155,15 @@ namespace DataMiner {
 		 * @param dataset The dataset to train on
 		 */
 		void createProcessor(const Data& dataset);
+
+		/**
+		 * Must create a decision tree based on the protected variables `targetColumn` amd `columns`, then save all the
+		 * decision tree rules to the protected variable `rules`
+		 * 
+		 * @throws A string description of why the process failed
+		 * @param dataset The dataset to use for the creation of the tree
+		 */
+		virtual void createDecisionTree(const Data& dataset) = 0;
 
 		/**
 		 * Loads a processor given a file a previous processor of the same type was saved to
