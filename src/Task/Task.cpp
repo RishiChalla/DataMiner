@@ -17,6 +17,7 @@
 #include "Task.hpp"
 #include <Logger/Logger.hpp>
 #include <Data/Data.hpp>
+#include <Processor/Processors.hpp>
 #include <sstream>
 
 using namespace DataMiner;
@@ -56,12 +57,58 @@ const std::map<TaskAction, std::string>& DataMiner::Task::getTaskActions() {
  * Runs the task
  */
 void DataMiner::Task::run() {
-	logger->print("Now beginning Data Mining Task, to proceed you must open a dataset.");
+	std::vector<std::string> algorithms;
+	{
+		std::stringstream str;
+		str << "List of all available processors (Please see readme.md for instructions to add custom processors):" << std::endl;
+		unsigned int counter = 0;
+
+		for (auto i = ProcessorList.begin(); i != ProcessorList.end(); i++) {
+			counter++;
+			str << counter << ". " << i->first << std::endl;
+			algorithms.push_back(i->first);
+		}
+
+		logger->info(str.str().c_str());
+	}
+
+	int algorithm = logger->getInput<int>("Please choose which processor to create a model from. (Input a number)", [](const int& value, void* ctx) {
+		const std::vector<std::string>& algorithms = *((std::vector<std::string>*) ctx);
+		return value > 0 && value <= algorithms.size();
+	}, &algorithms);
+	
 
 	try {
-		const Data dataset;
+		Processor* processor = ProcessorList[algorithms[algorithm - 1]]();
 
-		
+		if (taskAction == TaskAction::createModel) {
+			logger->print("Now beginning model creation task, to proceed you must open a dataset to train from");
+			const Data dataset;
+			processor->createProcessor(dataset);
+
+			bool save = logger->getInput<std::string>("Would you like to save the data processor? (Y/N)", [](const std::string& value) {
+				return value == "Y" || value == "N";
+			}) == "Y";
+
+			if (save) {
+				std::string fileName = logger->getInput<std::string>("Please input the name of the file to save the processor to (include extensions)");
+				processor->saveProcessor(fileName.c_str());
+			}
+		}
+		if (taskAction == TaskAction::loadModel) {
+			logger->print("Now beginning model loading task, to proceed you must open a file to which the processor previously saved to");
+			std::string fileName = logger->getInput<std::string>("Please input the name of the file to which the processor was previously saved to");
+			processor->loadProcessor(fileName.c_str());
+
+			logger->print("To use the model for predictions you must import a dataset containing all colummns (You can leave the target column blank on all rows)");
+			const Data dataset;
+
+			logger->print("Now beginning prediction process: (WIP)");
+
+			// TODO - Prediction process
+		}
+
+		delete processor;
 	}
 	catch (const char* error) {
 		std::stringstream errStream;
@@ -70,4 +117,6 @@ void DataMiner::Task::run() {
 		logger->print("Now ending Data Mining Task due to an error.");
 		return;
 	}
+
+	logger->print("Data Mining Task has ended successfully.");
 }

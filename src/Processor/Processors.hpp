@@ -32,7 +32,7 @@ namespace DataMiner {
 	/**
 	 * Map containing all available processor algorithms
 	 */
-	std::map<std::string, createProcessorFn> processorType = {
+	std::map<std::string, createProcessorFn> ProcessorList = {
 		{
 			"Desicion Tree",
 			[](void){
