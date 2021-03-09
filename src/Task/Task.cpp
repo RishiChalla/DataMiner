@@ -96,16 +96,28 @@ void DataMiner::Task::run() {
 			}
 		}
 		if (taskAction == TaskAction::loadModel) {
-			logger->print("Now beginning model loading task, to proceed you must open a file to which the processor previously saved to");
-			std::string fileName = logger->getInput<std::string>("Please input the name of the file to which the processor was previously saved to");
-			processor->loadProcessor(fileName.c_str());
-
-			logger->print("To use the model for predictions you must import a dataset containing all colummns (You can leave the target column blank on all rows)");
+			logger->print("To use a model for predictions you must import a dataset containing all colummns and data for predictions (You can leave the target column blank on all rows)");
 			const Data dataset;
 
-			logger->print("Now beginning prediction process: (WIP)");
+			logger->print("Now beginning model loading task, to proceed you must open a file to which the processor previously saved to");
+			std::string fileName = logger->getInput<std::string>("Please input the name of the file to which the processor was previously saved to");
+			processor->loadProcessor(dataset, fileName.c_str());
+
+			DataType targetType = dataset.getTarget().type;
 
 			// TODO - Prediction process
+			logger->info("Now showing all predictions:");
+			for (size_t row = 0; row < dataset.numRows(); row++) {
+				std::stringstream str;
+				str << "Row " << (row + 1) << " -> ";
+
+				if (targetType == DataType::number)
+					str << processor->predictNumerical(dataset.getRow(row));
+				if (targetType == DataType::string)
+					str << processor->predictCategorical(dataset.getRow(row));
+
+				logger->print(str.str().c_str());
+			}
 		}
 
 		delete processor;

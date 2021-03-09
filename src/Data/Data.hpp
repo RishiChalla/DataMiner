@@ -469,5 +469,13 @@ namespace DataMiner {
 		size_t numRows() const {
 			return nrows;
 		}
+
+		/**
+		 * Retrieves the target column
+		 * 
+		 * @throws A string if there is no target column
+		 * @returns The target column
+		 */
+		const DataColumn& getTarget() const;
 	};
 }

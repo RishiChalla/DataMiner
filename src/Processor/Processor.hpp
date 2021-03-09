@@ -42,9 +42,10 @@ namespace DataMiner {
 		 * Loads a processor given a file a previous processor of the same type was saved to
 		 *
 		 * @throws A string with a description of why the task failed
+		 * @param dataset A dataset containing all appropriate columns
 		 * @param filename The file the processor was saved to
 		 */
-		virtual void loadProcessor(const char* filename) = 0;
+		virtual void loadProcessor(const Data& dataset, const char* filename) = 0;
 
 		/**
 		 * Saves the processor to a file

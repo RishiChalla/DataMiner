@@ -65,7 +65,7 @@ namespace DataMiner {
 			 * @param value The value to check for
 			 * @returns Whether or not the value passes the condition
 			 */
-			bool testCondition(double value);
+			bool testCondition(const double& value) const;
 
 			/**
 			 * Tests if a value passes this condition
@@ -74,7 +74,7 @@ namespace DataMiner {
 			 * @param value The value to check for
 			 * @returns Whether or not the value passes the condition
 			 */
-			bool testCondition(std::string value);
+			bool testCondition(const std::string& value) const;
 		};
 
 		/**
@@ -95,6 +95,11 @@ namespace DataMiner {
 			const DataColumn& target;
 
 			/**
+			 * List of all columns in the dataset
+			 */
+			const std::vector<const DataColumn*>& columns;
+
+			/**
 			 * The numeric output for the target column if all conditions are satisfied and the target column is a string
 			 */
 			double numOutput;
@@ -109,7 +114,7 @@ namespace DataMiner {
 			 * 
 			 * @param target The target column of the dataset the tree is based on
 			 */
-			DecisionTreeRule(const DataColumn& target) : target(target) {}
+			DecisionTreeRule(const DataColumn& target, const std::vector<const DataColumn*>& columns) : target(target), columns(columns) {}
 
 			/**
 			 * Checks whether a row satisfies all conditions in this rule
@@ -118,7 +123,7 @@ namespace DataMiner {
 			 * @param row The row to check for (target column's data will not be checked)
 			 * @returns Whether or not the row satisfies all conditions in this rule
 			 */
-			bool satisfiesConditions(const DataRow& row);
+			bool satisfiesConditions(const DataRow& row) const;
 		};
 	
 	private:
@@ -137,7 +142,7 @@ namespace DataMiner {
 		/**
 		 * Creates a new decision tree algorithm
 		 */
-		AlgorithmDecisionTree();
+		AlgorithmDecisionTree() {}
 
 		/**
 		 * Creates a processor given a dataset to train on
@@ -151,9 +156,10 @@ namespace DataMiner {
 		 * Loads a processor given a file a previous processor of the same type was saved to
 		 *
 		 * @throws A string with a description of why the task failed
+		 * @param dataset A dataset containing all appropriate columns
 		 * @param filename The file the processor was saved to
 		 */
-		void loadProcessor(const char* filename);
+		void loadProcessor(const Data& dataset, const char* filename);
 
 		/**
 		 * Saves the processor to a file

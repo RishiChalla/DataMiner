@@ -553,10 +553,20 @@ const DataRow DataMiner::Data::getRow(size_t row) const {
 		colIndex++;
 	}
 
-	logger->print(std::to_string(strDat.size()).c_str());
-	logger->print(std::to_string(numDat.size()).c_str());
-
 	return DataRow(cols, strDat, numDat);
+}
+
+/**
+ * Retrieves the target column
+ * 
+ * @throws A string if there is no target column
+ * @returns The target column
+ */
+const DataColumn& DataMiner::Data::getTarget() const {
+	for (const DataColumn& col : cols)
+		if (col.role == DataRole::target)
+			return col;
+	throw "No targets error";
 }
 
 /**
